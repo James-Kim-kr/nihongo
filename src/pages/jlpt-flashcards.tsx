@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import Head from 'next/head';
 import { GetStaticProps } from 'next';
 import fs from 'fs';
@@ -23,126 +23,123 @@ interface JLPTFlashcardsProps {
   vocabData: JLPTVocab;
 }
 
-const stageSlots = [-1, 0, 1] as const;
 const STORAGE_KEY = 'jlptFlashcardsState';
+const AUTO_JA_DURATION = 1800;
+const AUTO_KO_DURATION = 1800;
 
 export default function JLPTFlashcards({ vocabData: initialVocabData }: JLPTFlashcardsProps) {
   const [vocabData, setVocabData] = useState<JLPTVocab>(initialVocabData);
   const [selectedLevel, setSelectedLevel] = useState<JLPTLevel>('N5');
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [flippedCards, setFlippedCards] = useState<Record<string, boolean>>({});
+  const [isFrontSide, setIsFrontSide] = useState(true);
+  const [isAutoPlaying, setIsAutoPlaying] = useState(false);
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
-
   const [hasHydrated, setHasHydrated] = useState(false);
 
+  const autoplayTimers = useRef<NodeJS.Timeout[]>([]);
   const minSwipeDistance = 50;
-  const currentCards = vocabData[selectedLevel] || [];
-  const totalCards = currentCards.length;
 
-  const getCardKey = useCallback((index: number) => `${selectedLevel}-${index}`, [selectedLevel]);
+  const currentDeck = vocabData[selectedLevel] || [];
+  const totalCards = currentDeck.length;
+  const activeCard = currentDeck[currentIndex];
 
-  const handleSpeak = useCallback((text: string) => {
+  const speakText = useCallback((text?: string | null, lang: 'ja-JP' | 'ko-KR' = 'ja-JP') => {
     if (typeof window === 'undefined' || !text) return;
+    if (!('speechSynthesis' in window)) return;
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = lang;
+    utterance.rate = lang === 'ja-JP' ? 0.9 : 1;
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(utterance);
+  }, []);
 
-    if ('speechSynthesis' in window) {
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'ja-JP';
-      utterance.rate = 0.85;
+  const clearAutoplayTimers = useCallback(() => {
+    autoplayTimers.current.forEach(timer => clearTimeout(timer));
+    autoplayTimers.current = [];
+  }, []);
+
+  const stopAutoplay = useCallback(() => {
+    clearAutoplayTimers();
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
       window.speechSynthesis.cancel();
-      window.speechSynthesis.speak(utterance);
     }
-  }, []);
-
-  const handleCardFlip = useCallback(
-    (index: number) => {
-      if (index < 0 || index >= totalCards) return;
-      const cardKey = getCardKey(index);
-      setFlippedCards(prev => ({
-        ...prev,
-        [cardKey]: !prev[cardKey],
-      }));
-
-      const card = vocabData[selectedLevel][index];
-      if (card?.hiragana) {
-        handleSpeak(card.hiragana);
-      }
-    },
-    [getCardKey, handleSpeak, selectedLevel, totalCards, vocabData]
-  );
-
-  const handleNext = useCallback(() => {
-    setCurrentIndex(prev => {
-      if (prev >= totalCards - 1) return prev;
-      return prev + 1;
-    });
-  }, [totalCards]);
-
-  const handlePrevious = useCallback(() => {
-    setCurrentIndex(prev => (prev <= 0 ? prev : prev - 1));
-  }, []);
-
-  useEffect(() => {
-    const handleKeyPress = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowLeft') {
-        handlePrevious();
-      } else if (e.key === 'ArrowRight') {
-        handleNext();
-      } else if (e.key === ' ' || e.key === 'Enter') {
-        e.preventDefault();
-        handleCardFlip(currentIndex);
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyPress);
-    return () => window.removeEventListener('keydown', handleKeyPress);
-  }, [currentIndex, handleCardFlip, handleNext, handlePrevious]);
+    setIsAutoPlaying(false);
+  }, [clearAutoplayTimers]);
 
   const clampToRange = useCallback((value: number, total: number) => {
     if (total <= 0) return 0;
     return Math.min(Math.max(value, 0), total - 1);
   }, []);
 
-  const handleLevelChange = (level: JLPTLevel) => {
-    setSelectedLevel(level);
-    setFlippedCards({});
-  };
-
-  const handleSliderInput = useCallback(
-    (nextIndex: number) => {
-      const safeIndex = clampToRange(nextIndex, totalCards);
-      setCurrentIndex(safeIndex);
+  const handleLevelChange = useCallback(
+    (level: JLPTLevel) => {
+      stopAutoplay();
+      setSelectedLevel(level);
+      setCurrentIndex(0);
+      setIsFrontSide(true);
     },
-    [clampToRange, totalCards]
+    [stopAutoplay]
   );
 
   const handleShuffleLevel = useCallback(() => {
+    stopAutoplay();
     setVocabData(prev => {
-      const currentDeck = prev[selectedLevel] ?? [];
-      if (currentDeck.length <= 1) {
-        return prev;
-      }
-      const shuffled = [...currentDeck];
+      const deck = prev[selectedLevel] ?? [];
+      if (deck.length <= 1) return prev;
+      const shuffled = [...deck];
       for (let i = shuffled.length - 1; i > 0; i -= 1) {
         const j = Math.floor(Math.random() * (i + 1));
         [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
       }
-      return {
-        ...prev,
-        [selectedLevel]: shuffled,
-      };
+      return { ...prev, [selectedLevel]: shuffled };
     });
     setCurrentIndex(0);
-    setFlippedCards(prev => {
-      const next = { ...prev };
-      Object.keys(next).forEach(key => {
-        if (key.startsWith(`${selectedLevel}-`)) {
-          delete next[key];
-        }
-      });
-      return next;
-    });
-  }, [selectedLevel, setVocabData]);
+    setIsFrontSide(true);
+  }, [selectedLevel, stopAutoplay]);
+
+  const handleSliderInput = useCallback(
+    (nextIndex: number) => {
+      stopAutoplay();
+      const safe = clampToRange(nextIndex, totalCards);
+      setCurrentIndex(safe);
+      setIsFrontSide(true);
+    },
+    [clampToRange, stopAutoplay, totalCards]
+  );
+
+  const handleCardTap = useCallback(() => {
+    if (!activeCard) return;
+    stopAutoplay();
+    if (isFrontSide) {
+      speakText(activeCard.hiragana, 'ja-JP');
+    } else {
+      speakText(activeCard.korean, 'ko-KR');
+    }
+    setIsFrontSide(prev => !prev);
+  }, [activeCard, isFrontSide, speakText, stopAutoplay]);
+
+  const handleNext = useCallback(() => {
+    stopAutoplay();
+    setCurrentIndex(prev => (prev >= totalCards - 1 ? prev : prev + 1));
+    setIsFrontSide(true);
+  }, [stopAutoplay, totalCards]);
+
+  const handlePrevious = useCallback(() => {
+    stopAutoplay();
+    setCurrentIndex(prev => (prev <= 0 ? prev : prev - 1));
+    setIsFrontSide(true);
+  }, [stopAutoplay]);
+
+  const handleToggleAutoplay = useCallback(() => {
+    if (isAutoPlaying) {
+      stopAutoplay();
+      return;
+    }
+    if (!activeCard) return;
+    setIsFrontSide(true);
+    setIsAutoPlaying(true);
+  }, [activeCard, isAutoPlaying, stopAutoplay]);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -154,15 +151,15 @@ export default function JLPTFlashcards({ vocabData: initialVocabData }: JLPTFlas
       }
       const parsed = JSON.parse(raw);
       const storedLevel: JLPTLevel | undefined =
-        parsed?.level && levels.includes(parsed.level) ? parsed.level : undefined;
+        parsed?.level && isJLPTLevel(parsed.level) ? parsed.level : undefined;
+      const levelToUse = storedLevel ?? selectedLevel;
       if (storedLevel && storedLevel !== selectedLevel) {
         setSelectedLevel(storedLevel);
       }
-      const levelForIndex = storedLevel ?? selectedLevel;
-      const storedIndex = parsed?.positions?.[levelForIndex];
+      const storedIndex = parsed?.positions?.[levelToUse];
       if (typeof storedIndex === 'number') {
-        const total = vocabData[levelForIndex]?.length ?? 0;
-        setCurrentIndex(clampToRange(storedIndex, total));
+        const deckSize = vocabData[levelToUse]?.length ?? 0;
+        setCurrentIndex(clampToRange(storedIndex, deckSize));
       }
     } catch (error) {
       console.warn('Unable to read flashcard state', error);
@@ -187,10 +184,7 @@ export default function JLPTFlashcards({ vocabData: initialVocabData }: JLPTFlas
       positions = {};
     }
     positions[selectedLevel] = currentIndex;
-    const payload = {
-      level: selectedLevel,
-      positions,
-    };
+    const payload = { level: selectedLevel, positions };
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
   }, [selectedLevel, currentIndex, hasHydrated]);
 
@@ -201,6 +195,39 @@ export default function JLPTFlashcards({ vocabData: initialVocabData }: JLPTFlas
       setCurrentIndex(clamped);
     }
   }, [currentIndex, totalCards, clampToRange, hasHydrated]);
+
+  useEffect(() => {
+    return () => {
+      clearAutoplayTimers();
+      if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+      }
+    };
+  }, [clearAutoplayTimers]);
+
+  useEffect(() => {
+    if (!isAutoPlaying || !activeCard) {
+      clearAutoplayTimers();
+      return;
+    }
+
+    setIsFrontSide(true);
+    speakText(activeCard.hiragana, 'ja-JP');
+
+    const flipTimer = setTimeout(() => {
+      setIsFrontSide(false);
+      speakText(activeCard.korean, 'ko-KR');
+    }, AUTO_JA_DURATION);
+
+    const nextTimer = setTimeout(() => {
+      setCurrentIndex(prev => (prev >= totalCards - 1 ? 0 : prev + 1));
+      setIsFrontSide(true);
+    }, AUTO_JA_DURATION + AUTO_KO_DURATION);
+
+    autoplayTimers.current = [flipTimer, nextTimer];
+
+    return () => clearAutoplayTimers();
+  }, [activeCard, isAutoPlaying, totalCards, speakText, clearAutoplayTimers]);
 
   const onTouchStart = (e: React.TouchEvent) => {
     setTouchEnd(null);
@@ -213,7 +240,6 @@ export default function JLPTFlashcards({ vocabData: initialVocabData }: JLPTFlas
 
   const onTouchEnd = () => {
     if (touchStart === null || touchEnd === null) return;
-
     const distance = touchStart - touchEnd;
     if (distance > minSwipeDistance) {
       handleNext();
@@ -222,11 +248,13 @@ export default function JLPTFlashcards({ vocabData: initialVocabData }: JLPTFlas
     }
   };
 
-  if (!currentCards.length) {
-    return <div className="flashcard-container">No vocabulary data available.</div>;
+  if (!activeCard) {
+    return (
+      <div className="flashcard-container">
+        <div className="empty-state">선택한 레벨에 카드가 없습니다.</div>
+      </div>
+    );
   }
-
-  const activeCard = currentCards[currentIndex];
 
   return (
     <>
@@ -240,9 +268,7 @@ export default function JLPTFlashcards({ vocabData: initialVocabData }: JLPTFlas
           <header className="flashcard-header">
             <p className="eyebrow">Neo Study Deck</p>
             <h1>JLPT Immersive Flashcards</h1>
-            <p className="subtitle">
-              세 장의 카드로 문맥을 느끼며 단어를 익히세요. 탭하면 즉시 뒤집히고 일본어 발음이 재생됩니다.
-            </p>
+            <p className="subtitle">한 장씩 집중해서 일본어·한국어 의미와 발음을 번갈아 익혀보세요.</p>
 
             <div className="level-selector">
               {levels.map(level => (
@@ -284,7 +310,7 @@ export default function JLPTFlashcards({ vocabData: initialVocabData }: JLPTFlas
                     type="button"
                     className="shuffle-btn"
                     onClick={handleShuffleLevel}
-                    disabled={(vocabData[selectedLevel]?.length ?? 0) <= 1}
+                    disabled={totalCards <= 1}
                   >
                     섞기
                   </button>
@@ -293,7 +319,7 @@ export default function JLPTFlashcards({ vocabData: initialVocabData }: JLPTFlas
             </div>
           </header>
 
-          <section className="interaction-zone">
+          <div className="nav-controls">
             <button
               className="nav-btn"
               onClick={handlePrevious}
@@ -302,71 +328,6 @@ export default function JLPTFlashcards({ vocabData: initialVocabData }: JLPTFlas
             >
               ‹
             </button>
-
-            <div
-              className="card-row"
-              onTouchStart={onTouchStart}
-              onTouchMove={onTouchMove}
-              onTouchEnd={onTouchEnd}
-            >
-              {stageSlots.map(offset => {
-                const actualIndex = currentIndex + offset;
-                const card = currentCards[actualIndex];
-                const cardKey = card ? getCardKey(actualIndex) : `placeholder-${offset}`;
-                const isActive = offset === 0 && !!card;
-                const isFlipped = card ? !!flippedCards[cardKey] : false;
-
-                if (!card) {
-                  return (
-                    <div key={cardKey} className="card-wrapper placeholder" aria-hidden="true">
-                      <div className="card-shell ghost">
-                        <div className="ghost-label">No card</div>
-                      </div>
-                    </div>
-                  );
-                }
-
-                const primaryText = card.hiragana;
-                const secondaryText = card.nihongo ?? card.hiragana;
-
-                return (
-                  <div
-                    key={cardKey}
-                    className={`card-wrapper${isActive ? ' active' : ''}`}
-                    role="button"
-                    tabIndex={0}
-                    aria-pressed={isFlipped}
-                    aria-label={`${card.nihongo || card.hiragana} 카드`}
-                    onClick={() => handleCardFlip(actualIndex)}
-                    onKeyDown={e => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        handleCardFlip(actualIndex);
-                      }
-                    }}
-                  >
-                    <div className="card-shell">
-                      <div className={`card-inner ${isFlipped ? 'flipped' : ''}`}>
-                        <div className="card-face card-front">
-                          <p className="card-label">Japanese</p>
-                          <span className="japanese-text">{primaryText}</span>
-                          {secondaryText && <span className="hiragana-text">{secondaryText}</span>}
-                          {card.romaji && <span className="romaji-text">{card.romaji}</span>}
-                          <p className="flip-hint">탭하면 의미와 발음이 재생돼요</p>
-                        </div>
-                        <div className="card-face card-back">
-                          <p className="card-label">Korean</p>
-                          <span className="korean-text">{card.korean}</span>
-                          <span className="hiragana-text muted">{card.hiragana}</span>
-                          <span className="romaji-text muted">{card.romaji}</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-
             <button
               className="nav-btn"
               onClick={handleNext}
@@ -375,24 +336,59 @@ export default function JLPTFlashcards({ vocabData: initialVocabData }: JLPTFlas
             >
               ›
             </button>
+          </div>
+
+          <section className="interaction-zone">
+            <div
+              className="card-viewer"
+              onTouchStart={onTouchStart}
+              onTouchMove={onTouchMove}
+              onTouchEnd={onTouchEnd}
+            >
+              <div
+                className="card-wrapper single"
+                role="button"
+                tabIndex={0}
+                aria-pressed={!isFrontSide}
+                aria-label="현재 카드"
+                onClick={handleCardTap}
+                onKeyDown={e => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    handleCardTap();
+                  }
+                }}
+              >
+                <div className="card-shell">
+                  <div className={`card-inner ${isFrontSide ? '' : 'flipped'}`}>
+                    <div className="card-face card-front">
+                      <p className="card-label">Japanese</p>
+                      <span className="japanese-text">{activeCard.hiragana}</span>
+                      <span className="hiragana-text">{activeCard.nihongo ?? activeCard.hiragana}</span>
+                      {activeCard.romaji && <span className="romaji-text">{activeCard.romaji}</span>}
+                      <p className="flip-hint">탭하면 발음을 듣고 의미를 확인해요</p>
+                    </div>
+                    <div className="card-face card-back">
+                      <p className="card-label">Korean</p>
+                      <span className="korean-text">{activeCard.korean}</span>
+                      <span className="romaji-text muted">{activeCard.nihongo ?? activeCard.hiragana}</span>
+                      <p className="flip-hint">탭하면 일본어로 돌아갑니다</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </section>
 
-          <section className="helper-panel">
-            <div>
-              <p className="helper-title">학습 팁</p>
-              <ul>
-                <li>가운데 카드를 기준으로 이전/다음 단어를 한눈에 비교하세요.</li>
-                <li>스페이스바 또는 엔터키로 현재 카드를 뒤집고 발음을 다시 들을 수 있어요.</li>
-                <li>모바일에서는 좌우 스와이프로 빠르게 레벨별 단어를 탐색할 수 있습니다.</li>
-              </ul>
-            </div>
-            {activeCard && (
-              <div className="active-card-info">
-                <p className="helper-title">현재 카드</p>
-                <p className="active-hiragana">{activeCard.hiragana}</p>
-                <p className="active-nihongo">{activeCard.nihongo ?? activeCard.hiragana}</p>
-              </div>
-            )}
+          <section className="auto-controller">
+            <button
+              type="button"
+              className={`play-btn ${isAutoPlaying ? 'pause' : 'play'}`}
+              onClick={handleToggleAutoplay}
+              disabled={!totalCards}
+            >
+              {isAutoPlaying ? '중지' : '플레이'}
+            </button>
           </section>
         </div>
       </div>
@@ -409,10 +405,10 @@ export default function JLPTFlashcards({ vocabData: initialVocabData }: JLPTFlas
 
         .flashcard-shell {
           width: 100%;
-          max-width: 1200px;
+          max-width: 960px;
           display: flex;
           flex-direction: column;
-          gap: 32px;
+          gap: 28px;
         }
 
         .flashcard-header {
@@ -430,7 +426,7 @@ export default function JLPTFlashcards({ vocabData: initialVocabData }: JLPTFlas
         }
 
         h1 {
-          font-size: 2.8rem;
+          font-size: 2.6rem;
           margin: 0;
           font-weight: 700;
         }
@@ -438,19 +434,18 @@ export default function JLPTFlashcards({ vocabData: initialVocabData }: JLPTFlas
         .subtitle {
           color: rgba(255, 255, 255, 0.8);
           font-size: 1rem;
-          margin-bottom: 10px;
+          margin-bottom: 12px;
         }
 
         .level-selector {
           display: flex;
           flex-wrap: wrap;
           justify-content: center;
-          gap: 12px;
-          margin-top: 10px;
+          gap: 10px;
         }
 
         .level-btn {
-          padding: 10px 24px;
+          padding: 10px 22px;
           border-radius: 999px;
           border: 1px solid rgba(255, 255, 255, 0.3);
           background: transparent;
@@ -466,70 +461,23 @@ export default function JLPTFlashcards({ vocabData: initialVocabData }: JLPTFlas
           border-color: transparent;
         }
 
-        .level-btn:hover {
-          transform: translateY(-2px);
-        }
-
         .stats-bar {
-          margin-top: 14px;
+          margin-top: 10px;
           padding: 16px 24px;
           border-radius: 24px;
-          background: rgba(255, 255, 255, 0.06);
-          border: 1px solid rgba(255, 255, 255, 0.08);
+          background: rgba(255, 255, 255, 0.08);
           display: flex;
           align-items: center;
           justify-content: center;
-          gap: 28px;
+          gap: 24px;
           flex-wrap: wrap;
         }
 
-        .scrubber-label {
-          flex: 1;
-          min-width: 220px;
+        .nav-controls {
           display: flex;
-          align-items: center;
-        }
-
-        .progress-scrubber {
-          width: 100%;
-          appearance: none;
-          height: 6px;
-          border-radius: 999px;
-          background: rgba(255, 255, 255, 0.2);
-          outline: none;
-        }
-
-        .progress-scrubber::-webkit-slider-thumb {
-          appearance: none;
-          width: 18px;
-          height: 18px;
-          border-radius: 50%;
-          background: linear-gradient(135deg, #ffd452, #ff5f6d);
-          cursor: pointer;
-          border: none;
-          box-shadow: 0 0 0 4px rgba(255, 95, 109, 0.2);
-        }
-
-        .progress-scrubber::-moz-range-thumb {
-          width: 18px;
-          height: 18px;
-          border-radius: 50%;
-          background: linear-gradient(135deg, #ffd452, #ff5f6d);
-          border: none;
-          cursor: pointer;
-          box-shadow: 0 0 0 4px rgba(255, 95, 109, 0.2);
-        }
-
-        .sr-only {
-          position: absolute;
-          width: 1px;
-          height: 1px;
-          padding: 0;
-          margin: -1px;
-          overflow: hidden;
-          clip: rect(0, 0, 0, 0);
-          white-space: nowrap;
-          border: 0;
+          justify-content: center;
+          gap: 18px;
+          margin-top: -10px;
         }
 
         .stat-block {
@@ -544,109 +492,76 @@ export default function JLPTFlashcards({ vocabData: initialVocabData }: JLPTFlas
           margin-bottom: 6px;
         }
 
-        .progress-track {
-          width: 220px;
-          height: 6px;
-          border-radius: 999px;
-          background: rgba(255, 255, 255, 0.15);
-          overflow: hidden;
+        .scrubber-label {
+          flex: 1;
+          min-width: 220px;
+          display: flex;
+          align-items: center;
         }
 
-        .progress-fill {
-          height: 100%;
-          background: linear-gradient(90deg, #ffd452, #ffb347, #ff5f6d);
+        .progress-scrubber {
+          width: 100%;
+          appearance: none;
+          height: 6px;
+          border-radius: 999px;
+          background: rgba(255, 255, 255, 0.25);
+          outline: none;
+        }
+
+        .progress-scrubber::-webkit-slider-thumb {
+          appearance: none;
+          width: 18px;
+          height: 18px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #ffd452, #ff5f6d);
+          border: none;
+          box-shadow: 0 0 0 4px rgba(255, 95, 109, 0.2);
+          cursor: pointer;
+        }
+
+        .level-display {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          justify-content: center;
+        }
+
+        .shuffle-btn {
+          padding: 8px 14px;
+          border-radius: 999px;
+          border: 1px solid rgba(255, 255, 255, 0.4);
+          background: transparent;
+          color: inherit;
+          cursor: pointer;
         }
 
         .interaction-zone {
           display: flex;
-          align-items: center;
           justify-content: center;
-          gap: 24px;
-          flex-wrap: wrap;
+          padding: 20px 0 50px;
         }
 
-        .nav-btn {
-          width: 64px;
-          height: 64px;
-          border-radius: 50%;
-          border: none;
-          background: linear-gradient(135deg, #ff758c, #ff7eb3);
-          color: #0b0f1a;
-          font-size: 1.8rem;
-          font-weight: 700;
-          cursor: pointer;
-          transition: transform 0.3s ease, box-shadow 0.3s ease;
-          box-shadow: 0 15px 35px rgba(255, 118, 142, 0.3);
-        }
-
-        .nav-btn:disabled {
-          opacity: 0.3;
-          cursor: not-allowed;
-          box-shadow: none;
-        }
-
-        .nav-btn:not(:disabled):hover {
-          transform: translateY(-3px) scale(1.05);
-        }
-
-        .card-row {
-          width: min(960px, 92vw);
-          margin: 0 auto;
-          display: grid;
-          grid-template-columns: repeat(3, minmax(0, 1fr));
-          gap: 32px;
-          align-items: center;
-        }
-
-        .card-wrapper {
+        .card-viewer {
           width: 100%;
-          max-width: 300px;
-          height: 420px;
-          justify-self: center;
           display: flex;
-          align-items: center;
           justify-content: center;
+        }
+
+        .card-wrapper.single {
+          width: min(280px, 65vw);
+          height: min(330px, 45vh);
           cursor: pointer;
-          transition: transform 0.35s ease, opacity 0.35s ease;
-        }
-
-        .card-wrapper.active {
-          transform: translateY(-12px) scale(1.05);
-          opacity: 1;
-        }
-
-        .card-wrapper:not(.active) {
-          transform: translateY(12px) scale(0.94);
-          opacity: 0.78;
-        }
-
-        .card-wrapper.placeholder {
-          pointer-events: none;
-          opacity: 0.35;
-          transform: none;
         }
 
         .card-shell {
           width: 100%;
           height: 100%;
-          border-radius: 28px;
-          border: 1px solid rgba(255, 255, 255, 0.08);
-          background: rgba(12, 18, 34, 0.65);
-          box-shadow: 0 25px 50px rgba(5, 8, 20, 0.55);
-          padding: 0;
-          position: relative;
-          display: flex;
-          align-items: stretch;
-          justify-content: stretch;
+          border-radius: 30px;
+          border: 1px solid rgba(255, 255, 255, 0.12);
+          background: rgba(0, 0, 0, 0.2);
+          box-shadow: 0 20px 45px rgba(4, 8, 20, 0.6);
           perspective: 1200px;
-        }
-
-        .card-shell.ghost {
-          border: 1px dashed rgba(255, 255, 255, 0.15);
-          background: rgba(255, 255, 255, 0.04);
-          box-shadow: none;
-          align-items: center;
-          justify-content: center;
+          position: relative;
         }
 
         .card-inner {
@@ -660,13 +575,6 @@ export default function JLPTFlashcards({ vocabData: initialVocabData }: JLPTFlas
 
         .card-inner.flipped {
           transform: rotateY(180deg);
-        }
-
-        .ghost-label {
-          font-size: 0.9rem;
-          letter-spacing: 2px;
-          text-transform: uppercase;
-          color: rgba(255, 255, 255, 0.4);
         }
 
         .card-face {
@@ -685,11 +593,11 @@ export default function JLPTFlashcards({ vocabData: initialVocabData }: JLPTFlas
         }
 
         .card-front {
-          background: linear-gradient(145deg, rgba(102, 152, 255, 0.9), rgba(53, 80, 185, 0.95));
+          background: linear-gradient(145deg, rgba(90, 134, 255, 0.92), rgba(59, 82, 184, 0.95));
         }
 
         .card-back {
-          background: linear-gradient(145deg, rgba(255, 213, 130, 0.92), rgba(255, 132, 141, 0.98));
+          background: linear-gradient(145deg, rgba(255, 189, 130, 0.92), rgba(255, 135, 141, 0.98));
           transform: rotateY(180deg);
         }
 
@@ -697,36 +605,37 @@ export default function JLPTFlashcards({ vocabData: initialVocabData }: JLPTFlas
           text-transform: uppercase;
           letter-spacing: 2px;
           font-size: 0.8rem;
-          margin-bottom: 16px;
-          opacity: 0.8;
+          margin-bottom: 12px;
+          opacity: 0.85;
         }
 
         .japanese-text {
-          font-size: 3.6rem;
+          font-size: clamp(2.2rem, 5vw, 3.4rem);
           font-weight: 700;
-          margin-bottom: 6px;
+          margin-bottom: 8px;
         }
 
         .hiragana-text {
-          font-size: 1.8rem;
-          font-weight: 500;
+          font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+          font-weight: 600;
+          color: rgba(255, 255, 255, 0.9);
         }
 
         .romaji-text {
-          font-size: 1.1rem;
+          font-size: 1rem;
           margin-top: 6px;
           letter-spacing: 1px;
+          opacity: 0.9;
         }
 
-        .romaji-text.muted,
-        .hiragana-text.muted {
-          opacity: 0.75;
+        .romaji-text.muted {
+          opacity: 0.7;
         }
 
         .korean-text {
-          font-size: 2.4rem;
+          font-size: clamp(1.8rem, 4vw, 2.6rem);
           font-weight: 700;
-          margin-bottom: 10px;
+          margin: 10px 0;
         }
 
         .flip-hint {
@@ -735,81 +644,94 @@ export default function JLPTFlashcards({ vocabData: initialVocabData }: JLPTFlas
           opacity: 0.8;
         }
 
-        .helper-panel {
-          display: flex;
-          justify-content: space-between;
-          gap: 24px;
-          padding: 24px;
-          border-radius: 28px;
-          background: rgba(9, 13, 26, 0.9);
-          border: 1px solid rgba(255, 255, 255, 0.08);
-          flex-wrap: wrap;
-        }
-
-        .helper-title {
-          font-weight: 700;
-          margin-bottom: 8px;
-        }
-
-        .helper-panel ul {
-          margin: 0;
-          padding-left: 18px;
-          color: rgba(255, 255, 255, 0.8);
-        }
-
-        .helper-panel li {
-          margin-bottom: 6px;
-          line-height: 1.4;
-        }
-
-        .active-card-info {
-          min-width: 220px;
-          text-align: right;
-        }
-
-        .active-hiragana {
+        .nav-btn {
+          width: 64px;
+          height: 64px;
+          border-radius: 50%;
+          border: none;
+          background: linear-gradient(135deg, #ff758c, #ff7eb3);
+          color: #0b0f1a;
           font-size: 2rem;
           font-weight: 700;
-          color: #fff;
+          cursor: pointer;
+          transition: transform 0.3s ease, box-shadow 0.3s ease;
+          box-shadow: 0 15px 35px rgba(255, 118, 142, 0.3);
         }
 
-        .active-nihongo {
+        .nav-btn:disabled {
+          opacity: 0.35;
+          cursor: not-allowed;
+          box-shadow: none;
+        }
+
+        .auto-controller {
+          display: flex;
+          justify-content: center;
+          margin-top: 70px;
+        }
+
+        .play-btn {
+          width: 200px;
+          height: 60px;
+          border-radius: 30px;
+          border: none;
+          font-size: 1.3rem;
+          font-weight: 700;
+          cursor: pointer;
+          color: #0b0f1a;
+          transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .play-btn.play {
+          background: linear-gradient(135deg, #56ccf2, #2f80ed);
+          box-shadow: 0 15px 40px rgba(47, 128, 237, 0.35);
+        }
+
+        .play-btn.pause {
+          background: linear-gradient(135deg, #f2994a, #f2c94c);
+          box-shadow: 0 15px 40px rgba(242, 153, 74, 0.35);
+        }
+
+        .play-btn:disabled {
+          opacity: 0.4;
+          cursor: not-allowed;
+          box-shadow: none;
+        }
+
+        .sr-only {
+          position: absolute;
+          width: 1px;
+          height: 1px;
+          padding: 0;
+          margin: -1px;
+          overflow: hidden;
+          clip: rect(0, 0, 0, 0);
+          border: 0;
+        }
+
+        .empty-state {
+          padding: 60px 30px;
+          border-radius: 24px;
+          background: rgba(255, 255, 255, 0.05);
+          border: 1px solid rgba(255, 255, 255, 0.08);
           font-size: 1.2rem;
-          font-weight: 600;
-          color: rgba(255, 255, 255, 0.75);
         }
 
         @media (max-width: 900px) {
           .interaction-zone {
             flex-direction: column;
+            padding: 10px 0 40px;
           }
 
-          .card-row {
-            grid-template-columns: minmax(0, 1fr);
-            width: 100%;
-            gap: 18px;
-          }
-
-          .card-wrapper {
-            max-width: 360px;
-            margin: 0 auto;
-            transform: none;
-            opacity: 1;
-          }
-
-          .helper-panel {
-            flex-direction: column;
-            text-align: left;
-          }
-
-          .active-card-info {
-            text-align: left;
+          .card-wrapper.single {
+            width: 80vw;
+            height: min(300px, 45vh);
           }
         }
 
         @media (max-width: 600px) {
           h1 {
-            font-size: 2.1rem;
+            font-size: 2rem;
           }
 
           .nav-btn {
@@ -817,17 +739,12 @@ export default function JLPTFlashcards({ vocabData: initialVocabData }: JLPTFlas
             height: 52px;
           }
 
-          .card-wrapper {
-            max-width: 320px;
-            height: 320px;
+          .card-wrapper.single {
+            height: 260px;
           }
 
-          .japanese-text {
-            font-size: 3rem;
-          }
-
-          .korean-text {
-            font-size: 2rem;
+          .play-btn {
+            width: 180px;
           }
         }
       `}</style>
