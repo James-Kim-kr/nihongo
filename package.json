@@ -1,0 +1,31 @@
+{
+  "name": "personal-blog",
+  "version": "1.0.0",
+  "description": "A personal blog to share resources and insights.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "keywords": [
+    "blog",
+    "personal",
+    "resources"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "gray-matter": "^4.0.3",
+    "next": "12.3.4",
+    "react": "17.0.2",
+    "react-dom": "17.0.2",
+    "remark": "14.0.2",
+    "remark-html": "15.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "16.18.11",
+    "@types/react": "17.0.76",
+    "typescript": "4.8.4"
+  }
+}

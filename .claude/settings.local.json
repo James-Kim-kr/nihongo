@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run dev:*)",
+      "Bash(timeout /t 5)",
+      "Bash(powershell -Command:*)",
+      "Bash(netstat:*)",
+      "Bash(findstr:*)",
+      "Bash(dir \"c:\\Users\\hanur\\OneDrive\\바탕 화면\\김성종\\blog\\personal-blog\\public\" /B)",
+      "Bash(node -e:*)",
+      "Bash(node scripts/crawl-jlpt-vocab.js:*)",
+      "Bash(dir:*)",
+      "Bash(npm ls:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

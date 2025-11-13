@@ -1,0 +1,1638 @@
+// JLPT 어휘 데이터베이스
+const jlptVocab = {
+  N5: [
+    {
+      japanese: "あさ",
+      hiragana: "あさ",
+      korean: "아침",
+      romaji: "asa"
+    },
+    {
+      japanese: "ひる",
+      hiragana: "ひる",
+      korean: "낮",
+      romaji: "hiru"
+    },
+    {
+      japanese: "ばん",
+      hiragana: "ばん",
+      korean: "저녁",
+      romaji: "ban"
+    },
+    {
+      japanese: "よる",
+      hiragana: "よる",
+      korean: "밤",
+      romaji: "yoru"
+    },
+    {
+      japanese: "いま",
+      hiragana: "いま",
+      korean: "지금",
+      romaji: "ima"
+    },
+    {
+      japanese: "きのう",
+      hiragana: "きのう",
+      korean: "어제",
+      romaji: "kinou"
+    },
+    {
+      japanese: "きょう",
+      hiragana: "きょう",
+      korean: "오늘",
+      romaji: "kyou"
+    },
+    {
+      japanese: "あした",
+      hiragana: "あした",
+      korean: "내일",
+      romaji: "ashita"
+    },
+    {
+      japanese: "まいにち",
+      hiragana: "まいにち",
+      korean: "매일",
+      romaji: "mainichi"
+    },
+    {
+      japanese: "まいあさ",
+      hiragana: "まいあさ",
+      korean: "매일 아침",
+      romaji: "maiasa"
+    },
+    {
+      japanese: "がっこう",
+      hiragana: "がっこう",
+      korean: "학교",
+      romaji: "gakkou"
+    },
+    {
+      japanese: "うち",
+      hiragana: "うち",
+      korean: "집",
+      romaji: "uchi"
+    },
+    {
+      japanese: "へや",
+      hiragana: "へや",
+      korean: "방",
+      romaji: "heya"
+    },
+    {
+      japanese: "みせ",
+      hiragana: "みせ",
+      korean: "가게",
+      romaji: "mise"
+    },
+    {
+      japanese: "ぎんこう",
+      hiragana: "ぎんこう",
+      korean: "은행",
+      romaji: "ginkou"
+    },
+    {
+      japanese: "びょういん",
+      hiragana: "びょういん",
+      korean: "병원",
+      romaji: "byouin"
+    },
+    {
+      japanese: "えき",
+      hiragana: "えき",
+      korean: "역",
+      romaji: "eki"
+    },
+    {
+      japanese: "くうこう",
+      hiragana: "くうこう",
+      korean: "공항",
+      romaji: "kuukou"
+    },
+    {
+      japanese: "こうえん",
+      hiragana: "こうえん",
+      korean: "공원",
+      romaji: "kouen"
+    },
+    {
+      japanese: "レストラン",
+      hiragana: "れすとらん",
+      korean: "레스토랑",
+      romaji: "resutoran"
+    },
+    {
+      japanese: "わたし",
+      hiragana: "わたし",
+      korean: "나",
+      romaji: "watashi"
+    },
+    {
+      japanese: "あなた",
+      hiragana: "あなた",
+      korean: "당신",
+      romaji: "anata"
+    },
+    {
+      japanese: "ひと",
+      hiragana: "ひと",
+      korean: "사람",
+      romaji: "hito"
+    },
+    {
+      japanese: "せんせい",
+      hiragana: "せんせい",
+      korean: "선생님",
+      romaji: "sensei"
+    },
+    {
+      japanese: "がくせい",
+      hiragana: "がくせい",
+      korean: "학생",
+      romaji: "gakusei"
+    },
+    {
+      japanese: "ともだち",
+      hiragana: "ともだち",
+      korean: "친구",
+      romaji: "tomodachi"
+    },
+    {
+      japanese: "かぞく",
+      hiragana: "かぞく",
+      korean: "가족",
+      romaji: "kazoku"
+    },
+    {
+      japanese: "ちち",
+      hiragana: "ちち",
+      korean: "아버지",
+      romaji: "chichi"
+    },
+    {
+      japanese: "はは",
+      hiragana: "はは",
+      korean: "어머니",
+      romaji: "haha"
+    },
+    {
+      japanese: "おとうさん",
+      hiragana: "おとうさん",
+      korean: "아버지(존칭)",
+      romaji: "otousan"
+    },
+    {
+      japanese: "おかあさん",
+      hiragana: "おかあさん",
+      korean: "어머니(존칭)",
+      romaji: "okaasan"
+    },
+    {
+      japanese: "あに",
+      hiragana: "あに",
+      korean: "형, 오빠",
+      romaji: "ani"
+    },
+    {
+      japanese: "あね",
+      hiragana: "あね",
+      korean: "누나, 언니",
+      romaji: "ane"
+    },
+    {
+      japanese: "おとうと",
+      hiragana: "おとうと",
+      korean: "남동생",
+      romaji: "otouto"
+    },
+    {
+      japanese: "いもうと",
+      hiragana: "いもうと",
+      korean: "여동생",
+      romaji: "imouto"
+    },
+    {
+      japanese: "ほん",
+      hiragana: "ほん",
+      korean: "책",
+      romaji: "hon"
+    },
+    {
+      japanese: "かばん",
+      hiragana: "かばん",
+      korean: "가방",
+      romaji: "kaban"
+    },
+    {
+      japanese: "ペン",
+      hiragana: "ぺん",
+      korean: "펜",
+      romaji: "pen"
+    },
+    {
+      japanese: "えんぴつ",
+      hiragana: "えんぴつ",
+      korean: "연필",
+      romaji: "enpitsu"
+    },
+    {
+      japanese: "けしゴム",
+      hiragana: "けしごむ",
+      korean: "지우개",
+      romaji: "keshigomu"
+    },
+    {
+      japanese: "ノート",
+      hiragana: "のーと",
+      korean: "노트",
+      romaji: "nooto"
+    },
+    {
+      japanese: "つくえ",
+      hiragana: "つくえ",
+      korean: "책상",
+      romaji: "tsukue"
+    },
+    {
+      japanese: "いす",
+      hiragana: "いす",
+      korean: "의자",
+      romaji: "isu"
+    },
+    {
+      japanese: "とけい",
+      hiragana: "とけい",
+      korean: "시계",
+      romaji: "tokei"
+    },
+    {
+      japanese: "でんわ",
+      hiragana: "でんわ",
+      korean: "전화",
+      romaji: "denwa"
+    },
+    {
+      japanese: "テレビ",
+      hiragana: "てれび",
+      korean: "텔레비전",
+      romaji: "terebi"
+    },
+    {
+      japanese: "ラジオ",
+      hiragana: "らじお",
+      korean: "라디오",
+      romaji: "rajio"
+    },
+    {
+      japanese: "カメラ",
+      hiragana: "かめら",
+      korean: "카메라",
+      romaji: "kamera"
+    },
+    {
+      japanese: "ごはん",
+      hiragana: "ごはん",
+      korean: "밥",
+      romaji: "gohan"
+    },
+    {
+      japanese: "みず",
+      hiragana: "みず",
+      korean: "물",
+      romaji: "mizu"
+    },
+    {
+      japanese: "おちゃ",
+      hiragana: "おちゃ",
+      korean: "차",
+      romaji: "ocha"
+    },
+    {
+      japanese: "コーヒー",
+      hiragana: "こーひー",
+      korean: "커피",
+      romaji: "koohii"
+    },
+    {
+      japanese: "パン",
+      hiragana: "ぱん",
+      korean: "빵",
+      romaji: "pan"
+    },
+    {
+      japanese: "たまご",
+      hiragana: "たまご",
+      korean: "계란",
+      romaji: "tamago"
+    },
+    {
+      japanese: "にく",
+      hiragana: "にく",
+      korean: "고기",
+      romaji: "niku"
+    },
+    {
+      japanese: "さかな",
+      hiragana: "さかな",
+      korean: "생선, 물고기",
+      romaji: "sakana"
+    },
+    {
+      japanese: "やさい",
+      hiragana: "やさい",
+      korean: "채소",
+      romaji: "yasai"
+    },
+    {
+      japanese: "くだもの",
+      hiragana: "くだもの",
+      korean: "과일",
+      romaji: "kudamono"
+    },
+    {
+      japanese: "りんご",
+      hiragana: "りんご",
+      korean: "사과",
+      romaji: "ringo"
+    },
+    {
+      japanese: "みかん",
+      hiragana: "みかん",
+      korean: "귤",
+      romaji: "mikan"
+    },
+    {
+      japanese: "いぬ",
+      hiragana: "いぬ",
+      korean: "개",
+      romaji: "inu"
+    },
+    {
+      japanese: "ねこ",
+      hiragana: "ねこ",
+      korean: "고양이",
+      romaji: "neko"
+    },
+    {
+      japanese: "とり",
+      hiragana: "とり",
+      korean: "새",
+      romaji: "tori"
+    },
+    {
+      japanese: "うし",
+      hiragana: "うし",
+      korean: "소",
+      romaji: "ushi"
+    },
+    {
+      japanese: "うま",
+      hiragana: "うま",
+      korean: "말",
+      romaji: "uma"
+    },
+    {
+      japanese: "たべる",
+      hiragana: "たべる",
+      korean: "먹다",
+      romaji: "taberu"
+    },
+    {
+      japanese: "のむ",
+      hiragana: "のむ",
+      korean: "마시다",
+      romaji: "nomu"
+    },
+    {
+      japanese: "みる",
+      hiragana: "みる",
+      korean: "보다",
+      romaji: "miru"
+    },
+    {
+      japanese: "きく",
+      hiragana: "きく",
+      korean: "듣다",
+      romaji: "kiku"
+    },
+    {
+      japanese: "よむ",
+      hiragana: "よむ",
+      korean: "읽다",
+      romaji: "yomu"
+    },
+    {
+      japanese: "かく",
+      hiragana: "かく",
+      korean: "쓰다",
+      romaji: "kaku"
+    },
+    {
+      japanese: "はなす",
+      hiragana: "はなす",
+      korean: "말하다",
+      romaji: "hanasu"
+    },
+    {
+      japanese: "いく",
+      hiragana: "いく",
+      korean: "가다",
+      romaji: "iku"
+    },
+    {
+      japanese: "くる",
+      hiragana: "くる",
+      korean: "오다",
+      romaji: "kuru"
+    },
+    {
+      japanese: "かえる",
+      hiragana: "かえる",
+      korean: "돌아가다",
+      romaji: "kaeru"
+    },
+    {
+      japanese: "ねる",
+      hiragana: "ねる",
+      korean: "자다",
+      romaji: "neru"
+    },
+    {
+      japanese: "おきる",
+      hiragana: "おきる",
+      korean: "일어나다",
+      romaji: "okiru"
+    },
+    {
+      japanese: "する",
+      hiragana: "する",
+      korean: "하다",
+      romaji: "suru"
+    },
+    {
+      japanese: "あう",
+      hiragana: "あう",
+      korean: "만나다",
+      romaji: "au"
+    },
+    {
+      japanese: "かう",
+      hiragana: "かう",
+      korean: "사다",
+      romaji: "kau"
+    },
+    {
+      japanese: "ある",
+      hiragana: "ある",
+      korean: "있다(무생물)",
+      romaji: "aru"
+    },
+    {
+      japanese: "いる",
+      hiragana: "いる",
+      korean: "있다(생물)",
+      romaji: "iru"
+    },
+    {
+      japanese: "おおきい",
+      hiragana: "おおきい",
+      korean: "크다",
+      romaji: "ookii"
+    },
+    {
+      japanese: "ちいさい",
+      hiragana: "ちいさい",
+      korean: "작다",
+      romaji: "chiisai"
+    },
+    {
+      japanese: "あたらしい",
+      hiragana: "あたらしい",
+      korean: "새롭다",
+      romaji: "atarashii"
+    },
+    {
+      japanese: "ふるい",
+      hiragana: "ふるい",
+      korean: "오래되다",
+      romaji: "furui"
+    },
+    {
+      japanese: "いい",
+      hiragana: "いい",
+      korean: "좋다",
+      romaji: "ii"
+    },
+    {
+      japanese: "わるい",
+      hiragana: "わるい",
+      korean: "나쁘다",
+      romaji: "warui"
+    },
+    {
+      japanese: "たかい",
+      hiragana: "たかい",
+      korean: "높다, 비싸다",
+      romaji: "takai"
+    },
+    {
+      japanese: "やすい",
+      hiragana: "やすい",
+      korean: "싸다",
+      romaji: "yasui"
+    },
+    {
+      japanese: "あつい",
+      hiragana: "あつい",
+      korean: "덥다, 뜨겁다",
+      romaji: "atsui"
+    },
+    {
+      japanese: "さむい",
+      hiragana: "さむい",
+      korean: "춥다",
+      romaji: "samui"
+    },
+    {
+      japanese: "むずかしい",
+      hiragana: "むずかしい",
+      korean: "어렵다",
+      romaji: "muzukashii"
+    },
+    {
+      japanese: "やさしい",
+      hiragana: "やさしい",
+      korean: "쉽다, 친절하다",
+      romaji: "yasashii"
+    },
+    {
+      japanese: "やま",
+      hiragana: "やま",
+      korean: "산",
+      romaji: "yama"
+    },
+    {
+      japanese: "かわ",
+      hiragana: "かわ",
+      korean: "강",
+      romaji: "kawa"
+    },
+    {
+      japanese: "うみ",
+      hiragana: "うみ",
+      korean: "바다",
+      romaji: "umi"
+    },
+    {
+      japanese: "そら",
+      hiragana: "そら",
+      korean: "하늘",
+      romaji: "sora"
+    },
+    {
+      japanese: "あめ",
+      hiragana: "あめ",
+      korean: "비",
+      romaji: "ame"
+    },
+    {
+      japanese: "ゆき",
+      hiragana: "ゆき",
+      korean: "눈(날씨)",
+      romaji: "yuki"
+    },
+    {
+      japanese: "かぜ",
+      hiragana: "かぜ",
+      korean: "바람",
+      romaji: "kaze"
+    },
+    {
+      japanese: "はな",
+      hiragana: "はな",
+      korean: "꽃",
+      romaji: "hana"
+    },
+    {
+      japanese: "き",
+      hiragana: "き",
+      korean: "나무",
+      romaji: "ki"
+    },
+    {
+      japanese: "くるま",
+      hiragana: "くるま",
+      korean: "자동차",
+      romaji: "kuruma"
+    },
+    {
+      japanese: "でんしゃ",
+      hiragana: "でんしゃ",
+      korean: "전철",
+      romaji: "densha"
+    },
+    {
+      japanese: "バス",
+      hiragana: "ばす",
+      korean: "버스",
+      romaji: "basu"
+    },
+    {
+      japanese: "タクシー",
+      hiragana: "たくしー",
+      korean: "택시",
+      romaji: "takushii"
+    },
+    {
+      japanese: "じてんしゃ",
+      hiragana: "じてんしゃ",
+      korean: "자전거",
+      romaji: "jitensha"
+    },
+    {
+      japanese: "ひこうき",
+      hiragana: "ひこうき",
+      korean: "비행기",
+      romaji: "hikouki"
+    },
+    {
+      japanese: "いろ",
+      hiragana: "いろ",
+      korean: "색",
+      romaji: "iro"
+    },
+    {
+      japanese: "あか",
+      hiragana: "あか",
+      korean: "빨강",
+      romaji: "aka"
+    },
+    {
+      japanese: "あお",
+      hiragana: "あお",
+      korean: "파랑",
+      romaji: "ao"
+    },
+    {
+      japanese: "しろ",
+      hiragana: "しろ",
+      korean: "하양",
+      romaji: "shiro"
+    },
+    {
+      japanese: "くろ",
+      hiragana: "くろ",
+      korean: "검정",
+      romaji: "kuro"
+    },
+    {
+      japanese: "きいろ",
+      hiragana: "きいろ",
+      korean: "노랑",
+      romaji: "kiiro"
+    }
+  ],
+  N4: [
+    {
+      japanese: "しゅうまつ",
+      hiragana: "しゅうまつ",
+      korean: "주말",
+      romaji: "shuumatsu"
+    },
+    {
+      japanese: "せいかつ",
+      hiragana: "せいかつ",
+      korean: "생활",
+      romaji: "seikatsu"
+    },
+    {
+      japanese: "しごと",
+      hiragana: "しごと",
+      korean: "일, 직업",
+      romaji: "shigoto"
+    },
+    {
+      japanese: "かいしゃ",
+      hiragana: "かいしゃ",
+      korean: "회사",
+      romaji: "kaisha"
+    },
+    {
+      japanese: "しゃちょう",
+      hiragana: "しゃちょう",
+      korean: "사장",
+      romaji: "shachou"
+    },
+    {
+      japanese: "ぶちょう",
+      hiragana: "ぶちょう",
+      korean: "부장",
+      romaji: "buchou"
+    },
+    {
+      japanese: "かちょう",
+      hiragana: "かちょう",
+      korean: "과장",
+      romaji: "kachou"
+    },
+    {
+      japanese: "しゃいん",
+      hiragana: "しゃいん",
+      korean: "사원",
+      romaji: "shain"
+    },
+    {
+      japanese: "アルバイト",
+      hiragana: "あるばいと",
+      korean: "아르바이트",
+      romaji: "arubaito"
+    },
+    {
+      japanese: "きゅうりょう",
+      hiragana: "きゅうりょう",
+      korean: "급여",
+      romaji: "kyuuryou"
+    },
+    {
+      japanese: "ざんぎょう",
+      hiragana: "ざんぎょう",
+      korean: "잔업",
+      romaji: "zangyou"
+    },
+    {
+      japanese: "かいぎ",
+      hiragana: "かいぎ",
+      korean: "회의",
+      romaji: "kaigi"
+    },
+    {
+      japanese: "しょるい",
+      hiragana: "しょるい",
+      korean: "서류",
+      romaji: "shorui"
+    },
+    {
+      japanese: "れんらく",
+      hiragana: "れんらく",
+      korean: "연락",
+      romaji: "renraku"
+    },
+    {
+      japanese: "けいかく",
+      hiragana: "けいかく",
+      korean: "계획",
+      romaji: "keikaku"
+    },
+    {
+      japanese: "じゅんび",
+      hiragana: "じゅんび",
+      korean: "준비",
+      romaji: "junbi"
+    },
+    {
+      japanese: "よてい",
+      hiragana: "よてい",
+      korean: "예정",
+      romaji: "yotei"
+    },
+    {
+      japanese: "やくそく",
+      hiragana: "やくそく",
+      korean: "약속",
+      romaji: "yakusoku"
+    },
+    {
+      japanese: "きぼう",
+      hiragana: "きぼう",
+      korean: "희망",
+      romaji: "kibou"
+    },
+    {
+      japanese: "けっこん",
+      hiragana: "けっこん",
+      korean: "결혼",
+      romaji: "kekkon"
+    },
+    {
+      japanese: "りょこう",
+      hiragana: "りょこう",
+      korean: "여행",
+      romaji: "ryokou"
+    },
+    {
+      japanese: "しょうたい",
+      hiragana: "しょうたい",
+      korean: "초대",
+      romaji: "shoutai"
+    },
+    {
+      japanese: "パーティー",
+      hiragana: "ぱーてぃー",
+      korean: "파티",
+      romaji: "paatii"
+    },
+    {
+      japanese: "プレゼント",
+      hiragana: "ぷれぜんと",
+      korean: "선물",
+      romaji: "purezento"
+    },
+    {
+      japanese: "おみやげ",
+      hiragana: "おみやげ",
+      korean: "선물, 기념품",
+      romaji: "omiyage"
+    },
+    {
+      japanese: "けいけん",
+      hiragana: "けいけん",
+      korean: "경험",
+      romaji: "keiken"
+    },
+    {
+      japanese: "しゅみ",
+      hiragana: "しゅみ",
+      korean: "취미",
+      romaji: "shumi"
+    },
+    {
+      japanese: "スポーツ",
+      hiragana: "すぽーつ",
+      korean: "스포츠",
+      romaji: "supootsu"
+    },
+    {
+      japanese: "おんがく",
+      hiragana: "おんがく",
+      korean: "음악",
+      romaji: "ongaku"
+    },
+    {
+      japanese: "えいが",
+      hiragana: "えいが",
+      korean: "영화",
+      romaji: "eiga"
+    },
+    {
+      japanese: "びじゅつ",
+      hiragana: "びじゅつ",
+      korean: "미술",
+      romaji: "bijutsu"
+    },
+    {
+      japanese: "しゃしん",
+      hiragana: "しゃしん",
+      korean: "사진",
+      romaji: "shashin"
+    },
+    {
+      japanese: "りょうり",
+      hiragana: "りょうり",
+      korean: "요리",
+      romaji: "ryouri"
+    },
+    {
+      japanese: "そうじ",
+      hiragana: "そうじ",
+      korean: "청소",
+      romaji: "souji"
+    },
+    {
+      japanese: "せんたく",
+      hiragana: "せんたく",
+      korean: "세탁",
+      romaji: "sentaku"
+    },
+    {
+      japanese: "かいもの",
+      hiragana: "かいもの",
+      korean: "쇼핑",
+      romaji: "kaimono"
+    },
+    {
+      japanese: "さんぽ",
+      hiragana: "さんぽ",
+      korean: "산책",
+      romaji: "sanpo"
+    },
+    {
+      japanese: "うんどう",
+      hiragana: "うんどう",
+      korean: "운동",
+      romaji: "undou"
+    },
+    {
+      japanese: "べんきょう",
+      hiragana: "べんきょう",
+      korean: "공부",
+      romaji: "benkyou"
+    },
+    {
+      japanese: "しけん",
+      hiragana: "しけん",
+      korean: "시험",
+      romaji: "shiken"
+    },
+    {
+      japanese: "しゅくだい",
+      hiragana: "しゅくだい",
+      korean: "숙제",
+      romaji: "shukudai"
+    },
+    {
+      japanese: "れんしゅう",
+      hiragana: "れんしゅう",
+      korean: "연습",
+      romaji: "renshuu"
+    },
+    {
+      japanese: "ふくしゅう",
+      hiragana: "ふくしゅう",
+      korean: "복습",
+      romaji: "fukushuu"
+    },
+    {
+      japanese: "よしゅう",
+      hiragana: "よしゅう",
+      korean: "예습",
+      romaji: "yoshuu"
+    },
+    {
+      japanese: "かんがえる",
+      hiragana: "かんがえる",
+      korean: "생각하다",
+      romaji: "kangaeru"
+    },
+    {
+      japanese: "おぼえる",
+      hiragana: "おぼえる",
+      korean: "기억하다",
+      romaji: "oboeru"
+    },
+    {
+      japanese: "わすれる",
+      hiragana: "わすれる",
+      korean: "잊다",
+      romaji: "wasureru"
+    },
+    {
+      japanese: "おしえる",
+      hiragana: "おしえる",
+      korean: "가르치다",
+      romaji: "oshieru"
+    },
+    {
+      japanese: "ならう",
+      hiragana: "ならう",
+      korean: "배우다",
+      romaji: "narau"
+    },
+    {
+      japanese: "せつめいする",
+      hiragana: "せつめいする",
+      korean: "설명하다",
+      romaji: "setsumei suru"
+    }
+  ],
+  N3: [
+    {
+      japanese: "かんきょう",
+      hiragana: "かんきょう",
+      korean: "환경",
+      romaji: "kankyou"
+    },
+    {
+      japanese: "しゃかい",
+      hiragana: "しゃかい",
+      korean: "사회",
+      romaji: "shakai"
+    },
+    {
+      japanese: "けいざい",
+      hiragana: "けいざい",
+      korean: "경제",
+      romaji: "keizai"
+    },
+    {
+      japanese: "せいじ",
+      hiragana: "せいじ",
+      korean: "정치",
+      romaji: "seiji"
+    },
+    {
+      japanese: "ぶんか",
+      hiragana: "ぶんか",
+      korean: "문화",
+      romaji: "bunka"
+    },
+    {
+      japanese: "れきし",
+      hiragana: "れきし",
+      korean: "역사",
+      romaji: "rekishi"
+    },
+    {
+      japanese: "でんとう",
+      hiragana: "でんとう",
+      korean: "전통",
+      romaji: "dentou"
+    },
+    {
+      japanese: "しゅうかん",
+      hiragana: "しゅうかん",
+      korean: "습관",
+      romaji: "shuukan"
+    },
+    {
+      japanese: "こうつう",
+      hiragana: "こうつう",
+      korean: "교통",
+      romaji: "koutsuu"
+    },
+    {
+      japanese: "じこ",
+      hiragana: "じこ",
+      korean: "사고",
+      romaji: "jiko"
+    },
+    {
+      japanese: "じしん",
+      hiragana: "じしん",
+      korean: "지진",
+      romaji: "jishin"
+    },
+    {
+      japanese: "たいふう",
+      hiragana: "たいふう",
+      korean: "태풍",
+      romaji: "taifuu"
+    },
+    {
+      japanese: "さいがい",
+      hiragana: "さいがい",
+      korean: "재해",
+      romaji: "saigai"
+    },
+    {
+      japanese: "きけん",
+      hiragana: "きけん",
+      korean: "위험",
+      romaji: "kiken"
+    },
+    {
+      japanese: "あんぜん",
+      hiragana: "あんぜん",
+      korean: "안전",
+      romaji: "anzen"
+    },
+    {
+      japanese: "ほけん",
+      hiragana: "ほけん",
+      korean: "보험",
+      romaji: "hoken"
+    },
+    {
+      japanese: "けんこう",
+      hiragana: "けんこう",
+      korean: "건강",
+      romaji: "kenkou"
+    },
+    {
+      japanese: "びょうき",
+      hiragana: "びょうき",
+      korean: "병",
+      romaji: "byouki"
+    },
+    {
+      japanese: "くすり",
+      hiragana: "くすり",
+      korean: "약",
+      romaji: "kusuri"
+    },
+    {
+      japanese: "ちりょう",
+      hiragana: "ちりょう",
+      korean: "치료",
+      romaji: "chiryou"
+    },
+    {
+      japanese: "けんさ",
+      hiragana: "けんさ",
+      korean: "검사",
+      romaji: "kensa"
+    },
+    {
+      japanese: "しゅじゅつ",
+      hiragana: "しゅじゅつ",
+      korean: "수술",
+      romaji: "shujutsu"
+    },
+    {
+      japanese: "にゅういん",
+      hiragana: "にゅういん",
+      korean: "입원",
+      romaji: "nyuuin"
+    },
+    {
+      japanese: "たいいん",
+      hiragana: "たいいん",
+      korean: "퇴원",
+      romaji: "taiin"
+    },
+    {
+      japanese: "きんちょう",
+      hiragana: "きんちょう",
+      korean: "긴장",
+      romaji: "kinchou"
+    },
+    {
+      japanese: "しんぱい",
+      hiragana: "しんぱい",
+      korean: "걱정",
+      romaji: "shinpai"
+    },
+    {
+      japanese: "あんしん",
+      hiragana: "あんしん",
+      korean: "안심",
+      romaji: "anshin"
+    },
+    {
+      japanese: "まんぞく",
+      hiragana: "まんぞく",
+      korean: "만족",
+      romaji: "manzoku"
+    },
+    {
+      japanese: "ふまん",
+      hiragana: "ふまん",
+      korean: "불만",
+      romaji: "fuman"
+    },
+    {
+      japanese: "かんしゃ",
+      hiragana: "かんしゃ",
+      korean: "감사",
+      romaji: "kansha"
+    },
+    {
+      japanese: "しつれい",
+      hiragana: "しつれい",
+      korean: "실례",
+      romaji: "shitsurei"
+    },
+    {
+      japanese: "ていねい",
+      hiragana: "ていねい",
+      korean: "정중함",
+      romaji: "teinei"
+    },
+    {
+      japanese: "そんけい",
+      hiragana: "そんけい",
+      korean: "존경",
+      romaji: "sonkei"
+    },
+    {
+      japanese: "ひはん",
+      hiragana: "ひはん",
+      korean: "비판",
+      romaji: "hihan"
+    },
+    {
+      japanese: "さんせい",
+      hiragana: "さんせい",
+      korean: "찬성",
+      romaji: "sansei"
+    },
+    {
+      japanese: "はんたい",
+      hiragana: "はんたい",
+      korean: "반대",
+      romaji: "hantai"
+    },
+    {
+      japanese: "いけん",
+      hiragana: "いけん",
+      korean: "의견",
+      romaji: "iken"
+    },
+    {
+      japanese: "ていあん",
+      hiragana: "ていあん",
+      korean: "제안",
+      romaji: "teian"
+    },
+    {
+      japanese: "そうだん",
+      hiragana: "そうだん",
+      korean: "상담",
+      romaji: "soudan"
+    },
+    {
+      japanese: "しつもん",
+      hiragana: "しつもん",
+      korean: "질문",
+      romaji: "shitsumon"
+    }
+  ],
+  N2: [
+    {
+      japanese: "ぎろん",
+      hiragana: "ぎろん",
+      korean: "논의",
+      romaji: "giron"
+    },
+    {
+      japanese: "けんきゅう",
+      hiragana: "けんきゅう",
+      korean: "연구",
+      romaji: "kenkyuu"
+    },
+    {
+      japanese: "ちょうさ",
+      hiragana: "ちょうさ",
+      korean: "조사",
+      romaji: "chousa"
+    },
+    {
+      japanese: "ぶんせき",
+      hiragana: "ぶんせき",
+      korean: "분석",
+      romaji: "bunseki"
+    },
+    {
+      japanese: "ひょうか",
+      hiragana: "ひょうか",
+      korean: "평가",
+      romaji: "hyouka"
+    },
+    {
+      japanese: "はんだん",
+      hiragana: "はんだん",
+      korean: "판단",
+      romaji: "handan"
+    },
+    {
+      japanese: "けつろん",
+      hiragana: "けつろん",
+      korean: "결론",
+      romaji: "ketsuron"
+    },
+    {
+      japanese: "りゆう",
+      hiragana: "りゆう",
+      korean: "이유",
+      romaji: "riyuu"
+    },
+    {
+      japanese: "げんいん",
+      hiragana: "げんいん",
+      korean: "원인",
+      romaji: "genin"
+    },
+    {
+      japanese: "けっか",
+      hiragana: "けっか",
+      korean: "결과",
+      romaji: "kekka"
+    },
+    {
+      japanese: "えいきょう",
+      hiragana: "えいきょう",
+      korean: "영향",
+      romaji: "eikyou"
+    },
+    {
+      japanese: "もくてき",
+      hiragana: "もくてき",
+      korean: "목적",
+      romaji: "mokuteki"
+    },
+    {
+      japanese: "もくひょう",
+      hiragana: "もくひょう",
+      korean: "목표",
+      romaji: "mokuhyou"
+    },
+    {
+      japanese: "ほうほう",
+      hiragana: "ほうほう",
+      korean: "방법",
+      romaji: "houhou"
+    },
+    {
+      japanese: "しゅだん",
+      hiragana: "しゅだん",
+      korean: "수단",
+      romaji: "shudan"
+    },
+    {
+      japanese: "かてい",
+      hiragana: "かてい",
+      korean: "과정",
+      romaji: "katei"
+    },
+    {
+      japanese: "じょうたい",
+      hiragana: "じょうたい",
+      korean: "상태",
+      romaji: "joutai"
+    },
+    {
+      japanese: "じょうきょう",
+      hiragana: "じょうきょう",
+      korean: "상황",
+      romaji: "joukyou"
+    },
+    {
+      japanese: "ばあい",
+      hiragana: "ばあい",
+      korean: "경우",
+      romaji: "baai"
+    },
+    {
+      japanese: "たいど",
+      hiragana: "たいど",
+      korean: "태도",
+      romaji: "taido"
+    },
+    {
+      japanese: "こうどう",
+      hiragana: "こうどう",
+      korean: "행동",
+      romaji: "koudou"
+    },
+    {
+      japanese: "せいかく",
+      hiragana: "せいかく",
+      korean: "성격",
+      romaji: "seikaku"
+    },
+    {
+      japanese: "のうりょく",
+      hiragana: "のうりょく",
+      korean: "능력",
+      romaji: "nouryoku"
+    },
+    {
+      japanese: "ぎじゅつ",
+      hiragana: "ぎじゅつ",
+      korean: "기술",
+      romaji: "gijutsu"
+    },
+    {
+      japanese: "ぎのう",
+      hiragana: "ぎのう",
+      korean: "기능",
+      romaji: "ginou"
+    },
+    {
+      japanese: "たいりょく",
+      hiragana: "たいりょく",
+      korean: "체력",
+      romaji: "tairyoku"
+    },
+    {
+      japanese: "ちりょく",
+      hiragana: "ちりょく",
+      korean: "지력",
+      romaji: "chiryoku"
+    },
+    {
+      japanese: "せいしん",
+      hiragana: "せいしん",
+      korean: "정신",
+      romaji: "seishin"
+    },
+    {
+      japanese: "こころ",
+      hiragana: "こころ",
+      korean: "마음",
+      romaji: "kokoro"
+    },
+    {
+      japanese: "かんじょう",
+      hiragana: "かんじょう",
+      korean: "감정",
+      romaji: "kanjou"
+    },
+    {
+      japanese: "いしき",
+      hiragana: "いしき",
+      korean: "의식",
+      romaji: "ishiki"
+    },
+    {
+      japanese: "むいしき",
+      hiragana: "むいしき",
+      korean: "무의식",
+      romaji: "muishiki"
+    },
+    {
+      japanese: "きおく",
+      hiragana: "きおく",
+      korean: "기억",
+      romaji: "kioku"
+    },
+    {
+      japanese: "そうぞう",
+      hiragana: "そうぞう",
+      korean: "상상",
+      romaji: "souzou"
+    },
+    {
+      japanese: "そうぞうりょく",
+      hiragana: "そうぞうりょく",
+      korean: "상상력",
+      romaji: "souzouryoku"
+    }
+  ],
+  N1: [
+    {
+      japanese: "がくもん",
+      hiragana: "がくもん",
+      korean: "학문",
+      romaji: "gakumon"
+    },
+    {
+      japanese: "てつがく",
+      hiragana: "てつがく",
+      korean: "철학",
+      romaji: "tetsugaku"
+    },
+    {
+      japanese: "ろんり",
+      hiragana: "ろんり",
+      korean: "논리",
+      romaji: "ronri"
+    },
+    {
+      japanese: "りろん",
+      hiragana: "りろん",
+      korean: "이론",
+      romaji: "riron"
+    },
+    {
+      japanese: "がいねん",
+      hiragana: "がいねん",
+      korean: "개념",
+      romaji: "gainen"
+    },
+    {
+      japanese: "ほんしつ",
+      hiragana: "ほんしつ",
+      korean: "본질",
+      romaji: "honshitsu"
+    },
+    {
+      japanese: "げんしょう",
+      hiragana: "げんしょう",
+      korean: "현상",
+      romaji: "genshou"
+    },
+    {
+      japanese: "ほうそく",
+      hiragana: "ほうそく",
+      korean: "법칙",
+      romaji: "housoku"
+    },
+    {
+      japanese: "げんり",
+      hiragana: "げんり",
+      korean: "원리",
+      romaji: "genri"
+    },
+    {
+      japanese: "たいけい",
+      hiragana: "たいけい",
+      korean: "체계",
+      romaji: "taikei"
+    },
+    {
+      japanese: "こうぞう",
+      hiragana: "こうぞう",
+      korean: "구조",
+      romaji: "kouzou"
+    },
+    {
+      japanese: "きのう",
+      hiragana: "きのう",
+      korean: "기능",
+      romaji: "kinou"
+    },
+    {
+      japanese: "やくわり",
+      hiragana: "やくわり",
+      korean: "역할",
+      romaji: "yakuwari"
+    },
+    {
+      japanese: "いぎ",
+      hiragana: "いぎ",
+      korean: "의의",
+      romaji: "igi"
+    },
+    {
+      japanese: "かち",
+      hiragana: "かち",
+      korean: "가치",
+      romaji: "kachi"
+    },
+    {
+      japanese: "きじゅん",
+      hiragana: "きじゅん",
+      korean: "기준",
+      romaji: "kijun"
+    },
+    {
+      japanese: "はんい",
+      hiragana: "はんい",
+      korean: "범위",
+      romaji: "han'i"
+    },
+    {
+      japanese: "げんど",
+      hiragana: "げんど",
+      korean: "한도",
+      romaji: "gendo"
+    },
+    {
+      japanese: "せいやく",
+      hiragana: "せいやく",
+      korean: "제약",
+      romaji: "seiyaku"
+    },
+    {
+      japanese: "じょうけん",
+      hiragana: "じょうけん",
+      korean: "조건",
+      romaji: "jouken"
+    },
+    {
+      japanese: "ぜんてい",
+      hiragana: "ぜんてい",
+      korean: "전제",
+      romaji: "zentei"
+    },
+    {
+      japanese: "かせつ",
+      hiragana: "かせつ",
+      korean: "가설",
+      romaji: "kasetsu"
+    },
+    {
+      japanese: "すいろん",
+      hiragana: "すいろん",
+      korean: "추론",
+      romaji: "suiron"
+    },
+    {
+      japanese: "しょうめい",
+      hiragana: "しょうめい",
+      korean: "증명",
+      romaji: "shoumei"
+    },
+    {
+      japanese: "けんしょう",
+      hiragana: "けんしょう",
+      korean: "검증",
+      romaji: "kenshou"
+    },
+    {
+      japanese: "じっしょう",
+      hiragana: "じっしょう",
+      korean: "실증",
+      romaji: "jisshou"
+    },
+    {
+      japanese: "たしょう",
+      hiragana: "たしょう",
+      korean: "다소",
+      romaji: "tashou"
+    },
+    {
+      japanese: "わずか",
+      hiragana: "わずか",
+      korean: "약간",
+      romaji: "wazuka"
+    },
+    {
+      japanese: "おおいに",
+      hiragana: "おおいに",
+      korean: "크게",
+      romaji: "ooini"
+    },
+    {
+      japanese: "きわめて",
+      hiragana: "きわめて",
+      korean: "극히",
+      romaji: "kiwamete"
+    }
+  ]
+};
+
+// Export for use in HTML
+if (typeof window !== 'undefined') {
+  window.jlptVocab = jlptVocab;
+}
