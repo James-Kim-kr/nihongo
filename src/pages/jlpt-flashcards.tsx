@@ -467,7 +467,7 @@ export default function JLPTFlashcards({ vocabData: initialVocabData }: JLPTFlas
           display: flex;
           flex-direction: column;
           gap: 32px;
-          padding: clamp(32px, 4vw, 48px);
+          padding: clamp(28px, 4vw, 48px);
           border-radius: 40px;
           background: rgba(10, 16, 34, 0.65);
           border: 1px solid rgba(255, 255, 255, 0.08);
@@ -484,8 +484,8 @@ export default function JLPTFlashcards({ vocabData: initialVocabData }: JLPTFlas
         }
 
         .menu-tab {
-          min-width: 120px;
-          padding: 10px 22px;
+          min-width: 110px;
+          padding: 10px 20px;
           border-radius: 999px;
           border: 1px solid rgba(255, 255, 255, 0.15);
           background: rgba(255, 255, 255, 0.02);
@@ -543,7 +543,7 @@ export default function JLPTFlashcards({ vocabData: initialVocabData }: JLPTFlas
         }
 
         .level-btn {
-          padding: 10px 22px;
+          padding: 10px 20px;
           border-radius: 999px;
           border: 1px solid rgba(255, 255, 255, 0.2);
           background: rgba(255, 255, 255, 0.02);
@@ -564,14 +564,22 @@ export default function JLPTFlashcards({ vocabData: initialVocabData }: JLPTFlas
 
         .stats-bar {
           margin-top: 8px;
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-          gap: 18px;
+          display: flex;
+          gap: 16px;
           width: 100%;
+          align-items: stretch;
+          flex-wrap: nowrap;
+          overflow-x: auto;
+          padding-bottom: 4px;
+          -webkit-overflow-scrolling: touch;
+        }
+
+        .stats-bar::-webkit-scrollbar {
+          display: none;
         }
 
         .stat-block {
-          width: 100%;
+          flex: 0 0 180px;
           background: rgba(255, 255, 255, 0.04);
           border: 1px solid rgba(255, 255, 255, 0.08);
           border-radius: 18px;
@@ -596,6 +604,8 @@ export default function JLPTFlashcards({ vocabData: initialVocabData }: JLPTFlas
         }
 
         .slider-block {
+          flex: 1 1 auto;
+          min-width: 0;
           width: 100%;
           align-items: stretch;
           gap: 12px;
@@ -896,13 +906,9 @@ export default function JLPTFlashcards({ vocabData: initialVocabData }: JLPTFlas
             padding: 28px 20px;
           }
 
-          .stats-bar {
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-          }
-
           .level-selector,
           .primary-menu {
-            padding: 12px 10px;
+            padding: 10px;
           }
 
           .interaction-zone {
@@ -924,6 +930,32 @@ export default function JLPTFlashcards({ vocabData: initialVocabData }: JLPTFlas
           }
         }
 
+        @media (max-width: 720px) {
+          .primary-menu,
+          .level-selector {
+            flex-wrap: nowrap;
+            justify-content: space-between;
+            gap: 8px;
+          }
+
+          .primary-menu {
+            padding: 8px 6px;
+          }
+
+          .level-selector {
+            padding: 10px 8px;
+          }
+
+          .menu-tab,
+          .level-btn {
+            flex: 1;
+            min-width: 0;
+            font-size: 0.85rem;
+            padding: 8px 10px;
+            text-align: center;
+          }
+        }
+
         @media (max-width: 600px) {
           .flashcard-page {
             padding: 20px 14px 40px;
@@ -931,10 +963,6 @@ export default function JLPTFlashcards({ vocabData: initialVocabData }: JLPTFlas
 
           h1 {
             font-size: 2rem;
-          }
-
-          .stats-bar {
-            grid-template-columns: 1fr;
           }
 
           .stat-block {
@@ -946,7 +974,13 @@ export default function JLPTFlashcards({ vocabData: initialVocabData }: JLPTFlas
           }
 
           .slider-inline {
-            gap: 10px;
+            gap: 8px;
+            flex-direction: column;
+            align-items: stretch;
+          }
+
+          .shuffle-btn.compact {
+            width: 100%;
           }
 
           .card-wrapper.single {
@@ -971,6 +1005,14 @@ export default function JLPTFlashcards({ vocabData: initialVocabData }: JLPTFlas
             width: 50px;
             height: 50px;
             font-size: 1.6rem;
+          }
+
+          .card-nav.prev {
+            left: 4%;
+          }
+
+          .card-nav.next {
+            right: 4%;
           }
         }
       `}</style>
