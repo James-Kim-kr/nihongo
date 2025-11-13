@@ -141,6 +141,28 @@ export default function JLPTFlashcards({ vocabData: initialVocabData }: JLPTFlas
     setIsAutoPlaying(true);
   }, [activeCard, isAutoPlaying, stopAutoplay]);
 
+  const handleComingSoon = useCallback(() => {
+    if (typeof window !== 'undefined') {
+      window.alert('서비스 준비중입니다.');
+    }
+  }, []);
+
+  const handlePrevButton = useCallback(
+    (event: React.MouseEvent<HTMLButtonElement>) => {
+      event.stopPropagation();
+      handlePrevious();
+    },
+    [handlePrevious]
+  );
+
+  const handleNextButton = useCallback(
+    (event: React.MouseEvent<HTMLButtonElement>) => {
+      event.stopPropagation();
+      handleNext();
+    },
+    [handleNext]
+  );
+
   useEffect(() => {
     if (typeof window === 'undefined') return;
     try {
@@ -250,8 +272,10 @@ export default function JLPTFlashcards({ vocabData: initialVocabData }: JLPTFlas
 
   if (!activeCard) {
     return (
-      <div className="flashcard-container">
-        <div className="empty-state">선택한 레벨에 카드가 없습니다.</div>
+      <div className="flashcard-page">
+        <div className="flashcard-container">
+          <div className="empty-state">선택한 레벨에 카드가 없습니다.</div>
+        </div>
       </div>
     );
   }
@@ -263,80 +287,72 @@ export default function JLPTFlashcards({ vocabData: initialVocabData }: JLPTFlas
         <meta name="description" content="Interactive JLPT vocabulary flashcards for levels N5 to N1" />
       </Head>
 
-      <div className="flashcard-container">
-        <div className="flashcard-shell">
-          <header className="flashcard-header">
-            <p className="eyebrow">Neo Study Deck</p>
-            <h1>JLPT Immersive Flashcards</h1>
-            <p className="subtitle">한 장씩 집중해서 일본어·한국어 의미와 발음을 번갈아 익혀보세요.</p>
+      <div className="flashcard-page">
+        <div className="flashcard-container">
+          <div className="flashcard-shell">
+            <nav className="primary-menu">
+              <button type="button" className="menu-tab active" aria-current="page">
+                어휘 카드
+              </button>
+              <button type="button" className="menu-tab" onClick={handleComingSoon}>
+                어휘 게임
+              </button>
+              <button type="button" className="menu-tab" onClick={handleComingSoon}>
+                문장 배우기
+              </button>
+            </nav>
+            <header className="flashcard-header">
+              <p className="eyebrow">Neo Study Deck</p>
+              <h1>JLPT Immersive Flashcards</h1>
+              <p className="subtitle">한 장씩 집중해서 일본어·한국어 의미와 발음을 번갈아 익혀보세요.</p>
 
-            <div className="level-selector">
-              {levels.map(level => (
-                <button
-                  key={level}
-                  className={`level-btn ${selectedLevel === level ? 'active' : ''}`}
-                  onClick={() => handleLevelChange(level)}
-                >
-                  {level}
-                </button>
-              ))}
-            </div>
-
-            <div className="stats-bar">
-              <div className="stat-block">
-                <span className="stat-label">현재 카드</span>
-                <strong>
-                  {totalCards === 0 ? 0 : currentIndex + 1} / {totalCards}
-                </strong>
-              </div>
-              <label className="scrubber-label">
-                <span className="sr-only">카드 위치 조정</span>
-                <input
-                  className="progress-scrubber"
-                  type="range"
-                  min={0}
-                  max={Math.max(totalCards - 1, 0)}
-                  step={1}
-                  value={Math.min(currentIndex, Math.max(totalCards - 1, 0))}
-                  onChange={e => handleSliderInput(Number(e.target.value))}
-                  disabled={totalCards <= 1}
-                />
-              </label>
-              <div className="stat-block level-block">
-                <span className="stat-label">선택 레벨</span>
-                <div className="level-display">
-                  <strong>{selectedLevel}</strong>
+              <div className="level-selector">
+                {levels.map(level => (
                   <button
-                    type="button"
-                    className="shuffle-btn"
-                    onClick={handleShuffleLevel}
-                    disabled={totalCards <= 1}
+                    key={level}
+                    className={`level-btn ${selectedLevel === level ? 'active' : ''}`}
+                    onClick={() => handleLevelChange(level)}
                   >
-                    섞기
+                    {level}
                   </button>
+                ))}
+              </div>
+
+              <div className="stats-bar">
+                <div className="stat-block">
+                  <span className="stat-label">현재 카드</span>
+                  <strong>
+                    {totalCards === 0 ? 0 : currentIndex + 1} / {totalCards}
+                  </strong>
+                </div>
+                <div className="stat-block slider-block">
+                  <span className="stat-label">카드 위치</span>
+                  <div className="slider-inline">
+                    <label className="scrubber-label">
+                      <span className="sr-only">카드 위치 조정</span>
+                      <input
+                        className="progress-scrubber"
+                        type="range"
+                        min={0}
+                        max={Math.max(totalCards - 1, 0)}
+                        step={1}
+                        value={Math.min(currentIndex, Math.max(totalCards - 1, 0))}
+                        onChange={e => handleSliderInput(Number(e.target.value))}
+                        disabled={totalCards <= 1}
+                      />
+                    </label>
+                    <button
+                      type="button"
+                      className="shuffle-btn compact"
+                      onClick={handleShuffleLevel}
+                      disabled={totalCards <= 1}
+                    >
+                      섞기
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          </header>
-
-          <div className="nav-controls">
-            <button
-              className="nav-btn"
-              onClick={handlePrevious}
-              disabled={currentIndex === 0}
-              aria-label="이전 카드"
-            >
-              ‹
-            </button>
-            <button
-              className="nav-btn"
-              onClick={handleNext}
-              disabled={currentIndex === totalCards - 1}
-              aria-label="다음 카드"
-            >
-              ›
-            </button>
-          </div>
+            </header>
 
           <section className="interaction-zone">
             <div
@@ -345,6 +361,16 @@ export default function JLPTFlashcards({ vocabData: initialVocabData }: JLPTFlas
               onTouchMove={onTouchMove}
               onTouchEnd={onTouchEnd}
             >
+              <button
+                type="button"
+                className="card-nav prev"
+                onClick={handlePrevButton}
+                onKeyDown={event => event.stopPropagation()}
+                disabled={currentIndex === 0}
+                aria-label="이전 카드"
+              >
+                ‹
+              </button>
               <div
                 className="card-wrapper single"
                 role="button"
@@ -360,23 +386,41 @@ export default function JLPTFlashcards({ vocabData: initialVocabData }: JLPTFlas
                 }}
               >
                 <div className="card-shell">
-                  <div className={`card-inner ${isFrontSide ? '' : 'flipped'}`}>
-                    <div className="card-face card-front">
-                      <p className="card-label">Japanese</p>
-                      <span className="japanese-text">{activeCard.hiragana}</span>
-                      <span className="hiragana-text">{activeCard.nihongo ?? activeCard.hiragana}</span>
-                      {activeCard.romaji && <span className="romaji-text">{activeCard.romaji}</span>}
-                      <p className="flip-hint">탭하면 발음을 듣고 의미를 확인해요</p>
-                    </div>
-                    <div className="card-face card-back">
-                      <p className="card-label">Korean</p>
-                      <span className="korean-text">{activeCard.korean}</span>
-                      <span className="romaji-text muted">{activeCard.nihongo ?? activeCard.hiragana}</span>
-                      <p className="flip-hint">탭하면 일본어로 돌아갑니다</p>
-                    </div>
+                  <div className={`card-face-static ${isFrontSide ? 'card-front' : 'card-back'}`}>
+                    {isFrontSide ? (
+                      <>
+                        <p className="card-label">Japanese</p>
+                        <span className="japanese-text">{activeCard.hiragana}</span>
+                        <span className="hiragana-text">{activeCard.nihongo ?? activeCard.hiragana}</span>
+                        {activeCard.romaji && <span className="romaji-text">{activeCard.romaji}</span>}
+                        <p className="flip-hint">탭하면 한국어 의미를 확인해요</p>
+                      </>
+                    ) : (
+                      <>
+                        <p className="card-label">Korean</p>
+                        <span className="korean-text">{activeCard.korean}</span>
+                        <span
+                          className="romaji-text placeholder"
+                          aria-hidden="true"
+                        >
+                          {activeCard.nihongo ?? activeCard.hiragana}
+                        </span>
+                        <p className="flip-hint">탭하면 일본어 카드로 돌아가요</p>
+                      </>
+                    )}
                   </div>
                 </div>
               </div>
+              <button
+                type="button"
+                className="card-nav next"
+                onClick={handleNextButton}
+                onKeyDown={event => event.stopPropagation()}
+                disabled={currentIndex === totalCards - 1}
+                aria-label="다음 카드"
+              >
+                ›
+              </button>
             </div>
           </section>
 
@@ -390,51 +434,101 @@ export default function JLPTFlashcards({ vocabData: initialVocabData }: JLPTFlas
               {isAutoPlaying ? '중지' : '플레이'}
             </button>
           </section>
+          </div>
         </div>
       </div>
 
       <style jsx>{`
-        .flashcard-container {
+        .flashcard-page {
           min-height: 100vh;
-          background: radial-gradient(circle at 20% 20%, #243b55, #141e30 60%, #090d18 100%);
-          padding: 40px 20px 80px;
+          width: 100%;
+          background: radial-gradient(circle at 20% 20%, #283d5f, #0f1829 55%, #05070f 100%);
+          padding: clamp(32px, 5vw, 80px) clamp(16px, 5vw, 60px);
+          overflow-x: hidden;
           display: flex;
           justify-content: center;
-          color: #f5f6ff;
+          box-sizing: border-box;
+        }
+
+        .flashcard-container {
+          width: 100%;
+          max-width: 1080px;
+          margin: 0 auto;
+          padding: 0 8px;
+          color: #e9edff;
+          display: flex;
+          justify-content: center;
+          align-items: stretch;
+          box-sizing: border-box;
         }
 
         .flashcard-shell {
           width: 100%;
-          max-width: 960px;
           display: flex;
           flex-direction: column;
-          gap: 28px;
+          gap: 32px;
+          padding: clamp(32px, 4vw, 48px);
+          border-radius: 40px;
+          background: rgba(10, 16, 34, 0.65);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          backdrop-filter: blur(18px);
+          box-shadow: 0 30px 80px rgba(3, 6, 15, 0.65);
+        }
+
+        .primary-menu {
+          display: flex;
+          justify-content: center;
+          gap: 12px;
+          margin-bottom: 8px;
+          flex-wrap: wrap;
+        }
+
+        .menu-tab {
+          min-width: 120px;
+          padding: 10px 22px;
+          border-radius: 999px;
+          border: 1px solid rgba(255, 255, 255, 0.15);
+          background: rgba(255, 255, 255, 0.02);
+          color: inherit;
+          font-weight: 600;
+          letter-spacing: 0.08em;
+          cursor: pointer;
+          transition: all 0.25s ease;
+        }
+
+        .menu-tab.active {
+          background: linear-gradient(120deg, #8ec5fc, #e0c3fc);
+          color: #0a1022;
+          border-color: transparent;
+          box-shadow: 0 12px 30px rgba(142, 197, 252, 0.35);
+          cursor: default;
         }
 
         .flashcard-header {
           text-align: center;
           display: flex;
           flex-direction: column;
-          gap: 12px;
+          gap: 18px;
         }
 
         .eyebrow {
           text-transform: uppercase;
-          letter-spacing: 4px;
-          font-size: 0.8rem;
-          color: rgba(255, 255, 255, 0.7);
+          letter-spacing: 0.45em;
+          font-size: 0.78rem;
+          color: rgba(233, 237, 255, 0.6);
         }
 
         h1 {
-          font-size: 2.6rem;
+          font-size: clamp(2.4rem, 4vw, 3.4rem);
           margin: 0;
           font-weight: 700;
+          letter-spacing: -0.02em;
         }
 
         .subtitle {
-          color: rgba(255, 255, 255, 0.8);
-          font-size: 1rem;
-          margin-bottom: 12px;
+          color: rgba(233, 237, 255, 0.75);
+          font-size: 1.05rem;
+          margin-bottom: 4px;
         }
 
         .level-selector {
@@ -442,181 +536,275 @@ export default function JLPTFlashcards({ vocabData: initialVocabData }: JLPTFlas
           flex-wrap: wrap;
           justify-content: center;
           gap: 10px;
+          padding: 12px;
+          border-radius: 999px;
+          background: rgba(255, 255, 255, 0.04);
+          border: 1px solid rgba(255, 255, 255, 0.06);
         }
 
         .level-btn {
           padding: 10px 22px;
           border-radius: 999px;
-          border: 1px solid rgba(255, 255, 255, 0.3);
-          background: transparent;
+          border: 1px solid rgba(255, 255, 255, 0.2);
+          background: rgba(255, 255, 255, 0.02);
           color: inherit;
           font-weight: 600;
+          letter-spacing: 0.08em;
           cursor: pointer;
-          transition: all 0.3s ease;
+          transition: transform 0.25s ease, background 0.25s ease, color 0.25s ease, border 0.25s ease;
         }
 
         .level-btn.active {
-          background: linear-gradient(135deg, #ff9a8b, #ff6a88, #ff99ac);
-          color: #0b0f1a;
+          background: linear-gradient(120deg, #8ec5fc, #e0c3fc);
+          color: #0a1022;
           border-color: transparent;
+          box-shadow: 0 12px 30px rgba(142, 197, 252, 0.35);
+          transform: translateY(-2px);
         }
 
         .stats-bar {
-          margin-top: 10px;
-          padding: 16px 24px;
-          border-radius: 24px;
-          background: rgba(255, 255, 255, 0.08);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 24px;
-          flex-wrap: wrap;
-        }
-
-        .nav-controls {
-          display: flex;
-          justify-content: center;
+          margin-top: 8px;
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
           gap: 18px;
-          margin-top: -10px;
+          width: 100%;
         }
 
         .stat-block {
-          min-width: 140px;
-          text-align: center;
+          width: 100%;
+          background: rgba(255, 255, 255, 0.04);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          border-radius: 18px;
+          padding: 16px 18px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 8px;
+          box-sizing: border-box;
+        }
+
+        .stat-block strong {
+          font-size: 1.4rem;
+          letter-spacing: 0.08em;
         }
 
         .stat-label {
-          display: block;
-          font-size: 0.85rem;
-          color: rgba(255, 255, 255, 0.7);
-          margin-bottom: 6px;
+          font-size: 0.75rem;
+          letter-spacing: 0.28em;
+          text-transform: uppercase;
+          color: rgba(233, 237, 255, 0.55);
+        }
+
+        .slider-block {
+          width: 100%;
+          align-items: stretch;
+          gap: 12px;
+          display: flex;
+          flex-direction: column;
+        }
+
+        .slider-inline {
+          width: 100%;
+          display: flex;
+          align-items: center;
+          gap: 16px;
+          flex-wrap: nowrap;
+          min-width: 0;
         }
 
         .scrubber-label {
-          flex: 1;
-          min-width: 220px;
+          width: 100%;
           display: flex;
           align-items: center;
+          margin: 0;
+          flex: 1;
+          min-width: 0;
         }
 
         .progress-scrubber {
           width: 100%;
+          max-width: 100%;
+          -webkit-appearance: none;
           appearance: none;
           height: 6px;
           border-radius: 999px;
-          background: rgba(255, 255, 255, 0.25);
+          background: rgba(255, 255, 255, 0.2);
           outline: none;
         }
 
+        .progress-scrubber:disabled {
+          opacity: 0.4;
+        }
+
         .progress-scrubber::-webkit-slider-thumb {
+          -webkit-appearance: none;
           appearance: none;
           width: 18px;
           height: 18px;
           border-radius: 50%;
-          background: linear-gradient(135deg, #ffd452, #ff5f6d);
+          background: linear-gradient(120deg, #ff9a9e, #fad0c4);
           border: none;
-          box-shadow: 0 0 0 4px rgba(255, 95, 109, 0.2);
+          box-shadow: 0 6px 18px rgba(250, 208, 196, 0.45);
           cursor: pointer;
         }
 
-        .level-display {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-          justify-content: center;
+        .progress-scrubber::-moz-range-thumb {
+          width: 18px;
+          height: 18px;
+          border-radius: 50%;
+          background: linear-gradient(120deg, #ff9a9e, #fad0c4);
+          border: none;
+          box-shadow: 0 6px 18px rgba(250, 208, 196, 0.45);
+          cursor: pointer;
         }
 
         .shuffle-btn {
-          padding: 8px 14px;
+          padding: 12px 22px;
           border-radius: 999px;
-          border: 1px solid rgba(255, 255, 255, 0.4);
-          background: transparent;
-          color: inherit;
+          border: none;
+          font-weight: 700;
+          letter-spacing: 0.08em;
+          background: linear-gradient(130deg, #fddb92, #d1fdff);
+          color: #0f1324;
           cursor: pointer;
+          transition: transform 0.25s ease, box-shadow 0.25s ease;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .shuffle-btn:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+          box-shadow: none;
+        }
+
+        .shuffle-btn:not(:disabled):hover {
+          transform: translateY(-2px);
+          box-shadow: 0 12px 25px rgba(209, 253, 255, 0.4);
+        }
+
+        .shuffle-btn.compact {
+          padding: 10px 18px;
+          font-size: 0.95rem;
+          white-space: nowrap;
+          flex-shrink: 0;
         }
 
         .interaction-zone {
           display: flex;
           justify-content: center;
-          padding: 20px 0 50px;
+          padding: 10px 0 40px;
         }
 
         .card-viewer {
           width: 100%;
           display: flex;
           justify-content: center;
+          position: relative;
         }
 
         .card-wrapper.single {
-          width: min(280px, 65vw);
-          height: min(330px, 45vh);
+          width: min(360px, 72vw);
+          min-height: min(360px, 50vh);
           cursor: pointer;
+          margin: 0 auto;
+          display: flex;
+          align-items: stretch;
+          justify-content: center;
+        }
+
+        .card-nav {
+          position: absolute;
+          top: 50%;
+          transform: translateY(-50%);
+          width: 58px;
+          height: 58px;
+          border-radius: 18px;
+          border: 1px solid rgba(255, 255, 255, 0.18);
+          background: rgba(5, 6, 15, 0.55);
+          color: #f8f9ff;
+          font-size: 2rem;
+          font-weight: 700;
+          cursor: pointer;
+          transition: transform 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 2;
+        }
+
+        .card-nav.prev {
+          left: 6%;
+        }
+
+        .card-nav.next {
+          right: 6%;
+        }
+
+        .card-nav:disabled {
+          opacity: 0.35;
+          cursor: not-allowed;
+          box-shadow: none;
+          border-color: rgba(255, 255, 255, 0.08);
+        }
+
+        .card-nav:not(:disabled):hover {
+          transform: translateY(calc(-50% - 2px));
+          background: rgba(255, 255, 255, 0.15);
         }
 
         .card-shell {
           width: 100%;
-          height: 100%;
-          border-radius: 30px;
+          min-height: inherit;
+          border-radius: 36px;
           border: 1px solid rgba(255, 255, 255, 0.12);
-          background: rgba(0, 0, 0, 0.2);
-          box-shadow: 0 20px 45px rgba(4, 8, 20, 0.6);
-          perspective: 1200px;
+          background: rgba(7, 10, 26, 0.58);
+          box-shadow: 0 28px 80px rgba(2, 2, 8, 0.65);
           position: relative;
+          overflow: hidden;
+          display: flex;
         }
 
-        .card-inner {
+        .card-face-static {
           width: 100%;
-          height: 100%;
-          position: relative;
-          transform-style: preserve-3d;
-          transition: transform 0.6s ease;
+          min-height: inherit;
           border-radius: inherit;
-        }
-
-        .card-inner.flipped {
-          transform: rotateY(180deg);
-        }
-
-        .card-face {
-          position: absolute;
-          width: 100%;
-          height: 100%;
-          backface-visibility: hidden;
-          border-radius: inherit;
-          padding: 40px 32px;
+          padding: 44px 36px;
           display: flex;
           flex-direction: column;
           justify-content: center;
           align-items: center;
           text-align: center;
           color: #fff;
+          gap: 6px;
+          transition: background 0.35s ease, color 0.35s ease;
         }
 
         .card-front {
-          background: linear-gradient(145deg, rgba(90, 134, 255, 0.92), rgba(59, 82, 184, 0.95));
+          background: linear-gradient(160deg, rgba(79, 114, 255, 0.95), rgba(124, 167, 255, 0.92));
         }
 
         .card-back {
-          background: linear-gradient(145deg, rgba(255, 189, 130, 0.92), rgba(255, 135, 141, 0.98));
-          transform: rotateY(180deg);
+          background: linear-gradient(160deg, rgba(255, 185, 134, 0.96), rgba(255, 133, 161, 0.95));
         }
 
         .card-label {
           text-transform: uppercase;
-          letter-spacing: 2px;
-          font-size: 0.8rem;
+          letter-spacing: 0.32em;
+          font-size: 0.78rem;
           margin-bottom: 12px;
           opacity: 0.85;
         }
 
         .japanese-text {
-          font-size: clamp(2.2rem, 5vw, 3.4rem);
+          font-size: clamp(3.1rem, 7.8vw, 4.7rem);
           font-weight: 700;
           margin-bottom: 8px;
         }
 
         .hiragana-text {
-          font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+          font-size: clamp(1.6rem, 3.3vw, 2.4rem);
           font-weight: 600;
           color: rgba(255, 255, 255, 0.9);
         }
@@ -632,64 +820,48 @@ export default function JLPTFlashcards({ vocabData: initialVocabData }: JLPTFlas
           opacity: 0.7;
         }
 
+        .romaji-text.placeholder {
+          opacity: 0;
+        }
+
         .korean-text {
-          font-size: clamp(1.8rem, 4vw, 2.6rem);
+          font-size: clamp(3.1rem, 7.8vw, 4.7rem);
           font-weight: 700;
           margin: 10px 0;
         }
 
         .flip-hint {
-          margin-top: 24px;
+          margin-top: 28px;
           font-size: 0.9rem;
-          opacity: 0.8;
-        }
-
-        .nav-btn {
-          width: 64px;
-          height: 64px;
-          border-radius: 50%;
-          border: none;
-          background: linear-gradient(135deg, #ff758c, #ff7eb3);
-          color: #0b0f1a;
-          font-size: 2rem;
-          font-weight: 700;
-          cursor: pointer;
-          transition: transform 0.3s ease, box-shadow 0.3s ease;
-          box-shadow: 0 15px 35px rgba(255, 118, 142, 0.3);
-        }
-
-        .nav-btn:disabled {
-          opacity: 0.35;
-          cursor: not-allowed;
-          box-shadow: none;
+          opacity: 0.82;
         }
 
         .auto-controller {
           display: flex;
           justify-content: center;
-          margin-top: 70px;
+          margin-top: 20px;
         }
 
         .play-btn {
-          width: 200px;
-          height: 60px;
-          border-radius: 30px;
+          width: 220px;
+          height: 64px;
+          border-radius: 999px;
           border: none;
-          font-size: 1.3rem;
+          font-size: 1.2rem;
           font-weight: 700;
           cursor: pointer;
-          color: #0b0f1a;
+          color: #05060f;
           transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
         .play-btn.play {
-          background: linear-gradient(135deg, #56ccf2, #2f80ed);
-          box-shadow: 0 15px 40px rgba(47, 128, 237, 0.35);
+          background: linear-gradient(130deg, #8fd3f4, #84fab0);
+          box-shadow: 0 18px 40px rgba(132, 250, 176, 0.35);
         }
 
         .play-btn.pause {
-          background: linear-gradient(135deg, #f2994a, #f2c94c);
-          box-shadow: 0 15px 40px rgba(242, 153, 74, 0.35);
+          background: linear-gradient(130deg, #f6d365, #fda085);
+          box-shadow: 0 18px 40px rgba(253, 160, 133, 0.35);
         }
 
         .play-btn:disabled {
@@ -710,42 +882,111 @@ export default function JLPTFlashcards({ vocabData: initialVocabData }: JLPTFlas
         }
 
         .empty-state {
-          padding: 60px 30px;
-          border-radius: 24px;
-          background: rgba(255, 255, 255, 0.05);
+          padding: 80px 40px;
+          border-radius: 32px;
+          background: rgba(10, 16, 34, 0.7);
           border: 1px solid rgba(255, 255, 255, 0.08);
           font-size: 1.2rem;
+          text-align: center;
+          color: #e9edff;
         }
 
         @media (max-width: 900px) {
+          .flashcard-shell {
+            padding: 28px 20px;
+          }
+
+          .stats-bar {
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+          }
+
+          .level-selector,
+          .primary-menu {
+            padding: 12px 10px;
+          }
+
           .interaction-zone {
             flex-direction: column;
-            padding: 10px 0 40px;
+            padding: 10px 0 30px;
           }
 
           .card-wrapper.single {
-            width: 80vw;
-            height: min(300px, 45vh);
+            width: 86vw;
+            min-height: min(320px, 55vh);
+          }
+
+          .card-nav.prev {
+            left: 2%;
+          }
+
+          .card-nav.next {
+            right: 2%;
           }
         }
 
         @media (max-width: 600px) {
+          .flashcard-page {
+            padding: 20px 14px 40px;
+          }
+
           h1 {
             font-size: 2rem;
           }
 
-          .nav-btn {
-            width: 52px;
-            height: 52px;
+          .stats-bar {
+            grid-template-columns: 1fr;
+          }
+
+          .stat-block {
+            padding: 14px 16px;
+          }
+
+          .slider-block {
+            gap: 8px;
+          }
+
+          .slider-inline {
+            gap: 10px;
           }
 
           .card-wrapper.single {
-            height: 260px;
+            width: 92vw;
+            min-height: 260px;
+          }
+
+          .card-face-static {
+            padding: 32px 24px;
           }
 
           .play-btn {
             width: 180px;
           }
+
+          .shuffle-btn {
+            width: 100%;
+            justify-content: center;
+          }
+
+          .card-nav {
+            width: 50px;
+            height: 50px;
+            font-size: 1.6rem;
+          }
+        }
+      `}</style>
+      <style jsx global>{`
+        html,
+        body,
+        #__next {
+          min-height: 100%;
+          width: 100%;
+          overflow-x: hidden;
+        }
+
+        body {
+          margin: 0;
+          background: #05070f;
+          overflow-x: hidden;
         }
       `}</style>
     </>
